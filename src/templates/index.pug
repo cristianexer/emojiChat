@@ -1,0 +1,11 @@
+extends layouts/base.pug
+
+block content
+    .container-fluid
+        .row
+            #chatOutput.col-12
+                include components/chatOutput.pug
+            #chatInput.col-12
+                include components/chatInput.pug
+            #nicknameModal.col-12
+                include components/nicknameModal.pug

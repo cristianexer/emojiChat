@@ -1,0 +1,114 @@
+@import 'vars.scss';
+
+
+.w-100{
+    width: 100%;
+}
+
+#chatInput{
+    position: absolute;
+    bottom: 0;
+    #messageForm{
+       display: inline-flex;
+       width: 100%;
+       background-color: #eee;
+       padding: 10px 5px;
+       border-top:1px solid #ddd;
+       &:before{
+        content: "Press Enter to scan, second time to send.";
+        position: absolute;
+        top: -1rem;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 0.6rem;
+        color: #555;
+
+        }
+       textarea{
+           resize: none !important;
+           height: 2.3rem;
+           position: relative;
+           border-radius: 15px;
+           margin-left:0.5rem;
+       }
+       button{
+           margin: auto 0.7rem;
+           
+       }
+    }
+}
+
+
+#chatOutput{
+    position: absolute;
+    height: 94vh;
+    top:0;
+    background-color: #eee;
+    .chatInner{
+       background-color: #fff;
+       height: 90vh;
+       margin:1rem auto;
+       border-radius: 12px;
+       border: 1px solid #ddd;
+    }
+}
+
+#chatInner{
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+#nicknameModal{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0,0,0,0.9);
+    bottom: 0;
+    .modal{
+        display: block;
+    }
+}
+
+#emotions{
+    position: absolute;
+    bottom:1rem;
+    left:0;
+    right:0;
+    @include animate(all,470ms);
+    @include transform(scale(0));
+
+    &.show{
+        @include transform(scale(1));
+    }
+
+    .badge{
+        color:#fff;
+        background-color:green;
+    }
+    .emoji{
+        font-size: 2.5rem;
+    }
+    .emotion{
+        line-height: 2.5rem;
+        font-size: 1rem;
+    }
+}
+
+.receivedMessage, .sentMessage{
+    min-width: 10rem;
+    max-width: 15rem;
+
+    .nickname{
+        display: block;
+        font-size: 0.65rem;
+    }
+    .message{
+        display: block;
+        font-size: 0.7rem;
+        white-space: pre-wrap;
+        line-height: 1.1rem;
+    }
+}
+

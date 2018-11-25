@@ -1,0 +1,13 @@
+.modal.fade.show(tabindex='-1', role='dialog', aria-hidden="true")
+  .modal-dialog.modal-dialog-centered(role='document')
+    .modal-content
+      .modal-header
+        h5.modal-title Please enter your nickname
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+          span(aria-hidden='true') ×
+      .modal-body
+        form#nicknameForm
+            input.form-control.badge-pill(type="text", name="nickname")
+            
+      .modal-footer
+        button#nicknameFormButton(type="submit").btn.btn-primary.badge.badge-pill Save

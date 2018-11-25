@@ -1,0 +1,150 @@
+const socket = new WebSocket(`ws://${window.location.hostname}:8080`);
+const chatInput = document.getElementById('messageForm');
+const messageBox = document.getElementById('messageBox');
+const chatInner = document.getElementById('chatInner');
+const nicknameModal = document.getElementById('nicknameModal');
+var nickname = "none";
+const emotionMap = {
+    "anger": "😡",
+    "disgust": "🤮",
+    "fear": "😰",
+    "joy": "😁",
+    "sadness": "😞"
+};
+
+
+
+
+socket.onopen = function () {
+
+    console.log('Connected');    
+    socket.onmessage = function (data) {
+        let response = JSON.parse(data.data);
+        if(response.nickname != nickname){
+        let div = document.createElement('div');
+        div.classList.add('col-12');
+        div.innerHTML = `<span class="badge badge-primary receivedMessage"><span class="nickname my-1 text-left">${response.nickname}</span><span class="message text-left my-1 py-1">${response.message}</span></span>`;
+        chatInner.appendChild(div);
+        }
+        
+    }
+    
+$(chatInput).submit((e)=>{
+    e.preventDefault();
+    if(e.target.message.value !== ''){
+    let div = document.createElement('div');
+    div.classList.add('col-12');
+    div.classList.add('text-right');
+    div.innerHTML = `<span class="badge badge-primary sentMessage"><span class="nickname my-1 text-left">${nickname}</span><span class="message text-left my-1 py-1">${e.target.message.value}</span></span>`;
+    chatInner.appendChild(div);
+    socket.send(JSON.stringify({
+        event: 'message',
+        data: {
+            nickname: nickname,
+            message: e.target.message.value
+        },
+    }));
+    e.target.message.value = '';
+    
+    }
+    return false;
+});
+
+
+let enters = 0;
+$(messageBox).on('keydown',(e)=>{
+    cleanEmotion();
+    if(e.which === 13){
+        if(enters === 0){
+            enters ++;
+            callIBM();
+            return false;
+        }
+        if(enters === 1){
+            e.preventDefault()
+            $(chatInput).submit();
+            e.target.value = '';
+            enters = 0;
+            return false;
+        }
+    }
+    cleanEmotion();
+    enters = 0;
+});
+
+$('#nicknameForm').submit(e=>{
+    e.preventDefault();
+    nickname = e.target.nickname.value;
+
+    $('#nicknameModal').remove();
+
+    return false;
+});
+
+$('#nicknameFormButton').on('click', e => $('#nicknameForm').submit() );
+
+};
+
+let sendButton = 0;
+$('#messageBoxSend').on('click', e => {
+    cleanEmotion();
+
+    if(sendButton === 0){
+        sendButton ++;
+        callIBM();
+        return false;
+    }
+    if(sendButton === 1){
+        e.preventDefault()
+        $(chatInput).submit();
+        messageBox.value = '';
+        sendButton = 0;
+        return false;
+    }
+    
+    cleanEmotion();
+    sendButton = 0;
+});
+
+
+
+
+function callIBM(){
+    if(messageBox.value !== '' && messageBox.value !== ' ')
+    $.ajax({
+        url: `${window.location.href}message`,
+        type: 'POST',
+        data:{
+            item: messageBox.value,
+            nickname: nickname
+        },
+        success: function (result) {
+            let emotion = Object.keys(result).reduce((a, b) => result[a] > result[b] ? a : b);
+            showEmotion(emotion);
+
+        },
+        error: function (error) {
+            
+        }
+    });
+    else
+    console.log("empty input");
+}
+
+const cleanEmotion = () =>{
+    $('#emotions .emoji').text('');
+    $('#emotions .emotion').text('');
+    $('#emotions').removeClass('show');
+};
+
+const showEmotion = (emotion) =>{
+    $('#emotions .emoji').text(emotionMap[emotion]);
+    $('#emotions .emotion').text(emotion);
+    $('#emotions').addClass('show');
+};
+
+
+
+$('#emotions').click(e=>{
+    $(this).removeClass('show');
+})
