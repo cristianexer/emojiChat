@@ -9,7 +9,9 @@ const emotionMap = {
     "disgust": "🤮",
     "fear": "😰",
     "joy": "😁",
-    "sadness": "😞"
+    "sadness": "😞",
+    "error": "🐞",
+    "warning":"⚠️"
 };
 
 
@@ -106,29 +108,43 @@ $('#messageBoxSend').on('click', e => {
     sendButton = 0;
 });
 
+const notEnoughText = (text) => {
+    if(text.charAt(text.length-1) === ' ')
+        text.slice(0, text.length-1);
+
+    return (text.split(' ').length <= 1);
+};
 
 
 
 function callIBM(){
-    if(messageBox.value !== '' && messageBox.value !== ' ')
-    $.ajax({
-        url: `${window.location.href}message`,
-        type: 'POST',
-        data:{
-            item: messageBox.value,
-            nickname: nickname
-        },
-        success: function (result) {
-            let emotion = Object.keys(result).reduce((a, b) => result[a] > result[b] ? a : b);
-            showEmotion(emotion);
-
-        },
-        error: function (error) {
-            
-        }
-    });
-    else
-    console.log("empty input");
+    if(messageBox.value == '' && messageBox.value == ' '){
+        showEmoji('warning',"No message");
+    }
+    else if(notEnoughText(messageBox.value)){
+        showEmoji('warning',"More text");
+    }
+    else{
+        $.ajax({
+            url: `${window.location.href}message`,
+            type: 'POST',
+            data:{
+                item: messageBox.value,
+                nickname: nickname
+            },
+            success: function (result) {
+                let emotion = Object.keys(result).reduce((a, b) => result[a] > result[b] ? a : b);
+                showEmotion(emotion);
+    
+            },
+            error: function (error) {
+                if(error.status == 500)
+                showEmoji('error',"More text");
+                else
+                showEmoji('error',error.statusText);
+            }
+        });
+    }
 }
 
 const cleanEmotion = () =>{
@@ -143,7 +159,11 @@ const showEmotion = (emotion) =>{
     $('#emotions').addClass('show');
 };
 
-
+const showEmoji = (type,error) =>{
+    $('#emotions .emoji').text(emotionMap[type]);
+    $('#emotions .emotion').text(error);
+    $('#emotions').addClass('show');
+};
 
 $('#emotions').click(e=>{
     $(this).removeClass('show');
