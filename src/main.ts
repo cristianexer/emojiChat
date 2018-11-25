@@ -12,7 +12,7 @@ async function bootstrap() {
   
   app.useWebSocketAdapter(new WsAdapter(app.getHttpServer()));
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '.', 'templates'));
+  app.setBaseViewsDir(join(__dirname, '..', 'templates'));
   app.setViewEngine('pug');
   
   
@@ -28,6 +28,6 @@ async function bootstrap() {
     }),
   );
   
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
