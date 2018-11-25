@@ -2,11 +2,11 @@ import { Controller, Param, Post, Body } from '@nestjs/common';
 import { ChatService } from '../services/chat.service';
 
 
-@Controller()
+@Controller('/message')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @Post('/message')
+  @Post()
   async root(@Body() body: string): Promise<object> {
 
     // @ts-ignore
