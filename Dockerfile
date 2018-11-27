@@ -8,6 +8,6 @@ RUN yarn install
 
 COPY . /usr/src/app
 
-EXPOSE 8080
-EXPOSE 3000
+
+EXPOSE 3000 8080
 CMD ["yarn", "run", "start:prod"]

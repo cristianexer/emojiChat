@@ -3,6 +3,8 @@ const chatInput = document.getElementById('messageForm');
 const messageBox = document.getElementById('messageBox');
 const chatInner = document.getElementById('chatInner');
 const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+const port = 8080;
+
 const emotionMap = {
     "anger": "😡",
     "disgust": "🤮",
@@ -22,6 +24,14 @@ $('#nicknameForm').submit(e => {
     nickname = e.target.nickname.value;
 
     $(nicknameModal).remove();
+
+    socket.send(JSON.stringify({
+        event: 'message',
+        data: {
+            nickname: 'Emojy',
+            message: `Hi ${nickname} ! and welcome to emojy chat.`
+        },
+    }));
 
     return false;
 });
@@ -54,25 +64,19 @@ $('#emotions').click(e => {
 
 
 
-socket = new WebSocket(`${protocol}://${window.location.hostname}:8080`);
+socket = new WebSocket(`${protocol}://${window.location.hostname}:${port}`);
 
 
 socket.onopen = function () {
 
-    socket.send(JSON.stringify({
-        event: 'message',
-        data: {
-            nickname: 'Emojy',
-            message: 'Welcome to emojy chat 😁 . You are now connected.'
-        },
-    }));
 
     socket.onmessage = function (data) {
         let response = JSON.parse(data.data);
         if (response.nickname != nickname) {
             let div = document.createElement('div');
             div.classList.add('col-12');
-            div.innerHTML = `<span class="badge badge-primary receivedMessage"><span class="nickname my-1 text-left">${response.nickname}</span><span class="message text-left my-1 py-1">${response.message}</span></span>`;
+            div.classList.add('my-2');
+            div.innerHTML = `<span class="badge badge-secondary receivedMessage"><span class="nickname my-1 text-left">${response.nickname}</span><span class="message text-left my-1 py-1">${response.message}</span></span>`;
             chatInner.appendChild(div);
         }
 
@@ -86,6 +90,7 @@ socket.onopen = function () {
             let div = document.createElement('div');
             div.classList.add('col-12');
             div.classList.add('text-right');
+            div.classList.add('my-2');
             div.innerHTML = `<span class="badge badge-primary sentMessage"><span class="nickname my-1 text-left">${nickname}</span><span class="message text-left my-1 py-1">${e.target.message.value}</span></span>`;
             chatInner.appendChild(div);
             socket.send(JSON.stringify({
