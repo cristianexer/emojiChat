@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Observable, of } from 'rxjs';
 
-@WebSocketGateway(8080)
+@WebSocketGateway(process.env.SOCKET_PORT || 8080)
 export class EventsGateway{
   @WebSocketServer() 
   private server: any;
