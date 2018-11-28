@@ -73,5 +73,9 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "coverageDirectory": "../coverage"
-  }
+  },
+  "repository": {
+  "type": "git",
+  "url": "git://github.com/cristianexer/emojiChat.git"
+}
 }
