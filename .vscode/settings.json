@@ -4,5 +4,7 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}"
     ],
-    "appService.deploySubpath": ""
+    "appService.deploySubpath": "",
+    "appService.showBuildDuringDeployPrompt": false,
+    "appService.defaultWebAppToDeploy": "/subscriptions/72f4c46a-07f2-4de8-b71b-5c07f04edac2/resourceGroups/appsvc_rg_linux_centralus/providers/Microsoft.Web/sites/emojy"
 }
